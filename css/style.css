@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    padding: 0;
+      
+}
+
+#board {
+    background-color: rgb(81, 184, 81);
+    height: 100vh;
+    position: relative;
+}
+
+.hadgehog {
+    background-color: rgb(86, 24, 24);
+    position: absolute;
+}
+
+.apple {
+    background-color: rgb(191, 227, 31);
+    position: absolute;
+}
+
