@@ -4,14 +4,15 @@ class Game {
         this.apples = []; //will store instances of the class Obstacle
     }
     start() {
-        this.hadgehog = new Hadgehog (10, 20, 50, 0, "hadgehog");
+        this.hadgehog = new Hadgehog (10, 10, 50, 0, "hadgehog");
         this.attachEventListeners();
         
-        let appleWidth = 10;
+        let appleWidth = 5;
+        let appleHeigth = appleWidth;
         const applesAppear = setInterval(() => {
             
             //let randomApple = Math.floor(Math.random()*(101 - appleWidth));
-            const appleInstance = new Apple(10, appleWidth, Math.floor(Math.random()*(101 - appleWidth)), 100, "apple");
+            const appleInstance = new Apple(5, appleWidth, Math.floor(Math.random()*(101 - appleWidth)), 100, "apple");
             this.apples.push(appleInstance);
         }, 2000);
         const applesDrop = setInterval(() => {
@@ -60,10 +61,20 @@ class MovingParts {
         // create dom element
         this.domElement = document.createElement('div');
         // set id and css
-        
+        // windowWidth * vw / 100
+        if (window.innerWidth >= window.innerHeight) {
+            this.domElement.style.width = window.innerHeight * this.height / 100 + "px";
+            console.log(window.innerWidth + ' --- ' + window.innerHeight);
+
+        } else {
+            this.domElement.style.height = window.innerWidth * this.width / 100 + "vh";
+        }
+
+
+
         this.domElement.className = this.idByClass;
-        this.domElement.style.width = this.width + "vw";
-        this.domElement.style.height = this.height + "vh";
+        //this.domElement.style.width = this.width + "vw";
+        //this.domElement.style.height = this.height + "vh";
         this.domElement.style.bottom = this.positionY + "vh";
         this.domElement.style.left = this.positionX + "vw";
         //this.domElement.style.backgroundImage = "url('/oop-game-codealong/images/player-left.png')"
