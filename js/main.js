@@ -19,7 +19,9 @@ class Game {
                 clearInterval(applesAppear);
             }
             
-        }, 2000);
+        }, 1000);
+        console.log(this.detectCollision(this.hadgehog));
+        
         //let tree = document.getElementById("container"); 
         //let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
         //console.log(this.hadgehog.positionX);
@@ -42,46 +44,75 @@ class Game {
         //
         //}
     }
-    attachEventListeners(){
+    attachEventListeners () {
+        let isInterval = false;
         document.addEventListener("keydown", (event) => {
             
-                let tree = document.getElementById("container"); 
-                let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
-            if(event.key === "ArrowLeft"){
-                this.hadgehog.movingLeft();
-                console.log(window.innerWidth * this.hadgehog.positionX/100);
-            }else if(event.key === "ArrowRight"){
-                this.hadgehog.movingRight();
                 //let tree = document.getElementById("container"); 
                 //let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
-                console.log(this.hadgehog.positionX);
-                console.log(window.innerWidth);
-                console.log(tree.getBoundingClientRect().right);
-                console.log(window.innerWidth * this.hadgehog.positionX/100);
-                console.log(treeMiddle);
-                if (window.innerWidth * this.hadgehog.positionX/100 >= treeMiddle) {
-                    console.log("i`m inside if...")
-                    console.log(window.innerWidth * this.hadgehog.positionX/100);
+            if (event.key === "ArrowLeft") {
+                this.hadgehog.movingLeft();
+                if (this.detectCollision(this.hadgehog, event.key) && !isInterval) {
                     const applesDrop = setInterval(() => {
                         this.apples.forEach((apple) => {
-                            apple.movingDown();
-                            if (apple.positionY < 0) {
+                            //apple.movingDown();
+                            if (apple.positionY > apple.stopPosition) {
                                 //clearInterval(applesDrop);
-                                apple.domElement.remove();
-                                this.apples.shift();
-                                console.log(apple.positionX);
+                                //apple.domElement.remove();
+                                //this.apples.shift();
+                                //console.log(this.apples);
+                                apple.movingDown();
                             }
                         })
-                    }, 600); 
-                
+                    }, 60); 
+                    isInterval = true;
                 }
+            } else if (event.key === "ArrowRight"){
+                this.hadgehog.movingRight();
+                
+                if (this.detectCollision(this.hadgehog, event.key) && !isInterval) {
+                    const applesDrop = setInterval(() => {
+                        this.apples.forEach((apple) => {
+                            //apple.movingDown();
+                            
+                            if (apple.positionY > apple.stopPosition) {
+                                //clearInterval(applesDrop);
+                                //apple.domElement.remove();
+                                //this.apples.shift();
+                                //console.log(this.apples);
+                                apple.movingDown();
+                                
+                            }
+                        })
+                        console.log(this.apples);
+                    }, 60); 
+                    isInterval = true;
+                }
+
             }
             if(event.key === "ArrowDown"){
                 this.hadgehog.movingDown();
             }else if(event.key === "ArrowUp"){
                 this.hadgehog.movingUp();
             }
+            console.log(isInterval);
         });
+    }
+
+    detectCollision(playerInstance, ev) {
+        if (ev) {
+            let tree = document.getElementById("container"); 
+            let treeMiddle = ((tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + 
+            tree.getBoundingClientRect().left)*100/window.innerWidth;
+            if ((ev === "ArrowLeft" && playerInstance.positionX  < treeMiddle || ev === "ArrowRight" && 
+            playerInstance.positionX + 3 > treeMiddle) && playerInstance.positionY > 3) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+
+        }
     }
 }
 
@@ -144,13 +175,15 @@ class Hadgehog extends MovingParts {
         super(height, width, positionX, positionY, idByClass, idParentContainer);
       
     }
+
 }
 
 class Apple extends MovingParts {
     constructor (height, width, positionX, positionY, idByClass, idParentContainer){
         super(height, width, positionX, positionY, idByClass, idParentContainer);
-       
+        this.stopPosition = Math.floor(Math.random()*30);
     }
+    
 }
 
 const game = new Game();
