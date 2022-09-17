@@ -4,37 +4,77 @@ class Game {
         this.apples = []; //will store instances of the class Obstacle
     }
     start() {
-        this.hadgehog = new Hadgehog (10, 10, 50, 0, "hadgehog");
+        this.hadgehog = new Hadgehog (10, 10, 50, 0, "hadgehog", "board");
         this.attachEventListeners();
         
         let appleWidth = 5;
         let appleHeigth = appleWidth;
         const applesAppear = setInterval(() => {
             
-            //let randomApple = Math.floor(Math.random()*(101 - appleWidth));
-            const appleInstance = new Apple(5, appleWidth, Math.floor(Math.random()*(101 - appleWidth)), 100, "apple");
+            let randomAppleX = Math.floor(Math.random()*(101 - appleWidth));
+            let randomAppleY = Math.floor(Math.random()*(61 - appleHeigth) + 40);
+            const appleInstance = new Apple(5, appleWidth, randomAppleX, randomAppleY, "apple", "container");
             this.apples.push(appleInstance);
-        }, 2000);
-        const applesDrop = setInterval(() => {
-            this.apples.forEach((apple) => {
-                apple.movingDown();
-                if (apple.positionY < 0) {
-                    //clearInterval(applesDrop);
-                    apple.domElement.remove();
-                    this.apples.shift();
-                    //console.log(appleInstance.domElement);
-                }
-            })
+            if (this.apples.length >20) {
+                clearInterval(applesAppear);
+            }
             
-        }, 60); 
+        }, 2000);
+        //let tree = document.getElementById("container"); 
+        //let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
+        //console.log(this.hadgehog.positionX);
+        //console.log(window.innerWidth * (this.hadgehog.positionX + this.hadgehog.width)/100);
+        //console.log(treeMiddle);
+        //if (window.innerWidth * (this.hadgehog.positionX + this.hadgehog.width)/100 >= treeMiddle) {
+        //    console.log("i`m inside if...")
+        //    console.log(window.innerWidth * (this.hadgehog.positionX + this.hadgehog.width)/100);
+        //    const applesDrop = setInterval(() => {
+        //        this.apples.forEach((apple) => {
+        //            apple.movingDown();
+        //            if (apple.positionY < 0) {
+        //                //clearInterval(applesDrop);
+        //                apple.domElement.remove();
+        //                this.apples.shift();
+        //                console.log(apple.positionX);
+        //            }
+        //        })
+        //    }, 60); 
+        //
+        //}
     }
     attachEventListeners(){
         document.addEventListener("keydown", (event) => {
-
+            
+                let tree = document.getElementById("container"); 
+                let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
             if(event.key === "ArrowLeft"){
                 this.hadgehog.movingLeft();
+                console.log(window.innerWidth * this.hadgehog.positionX/100);
             }else if(event.key === "ArrowRight"){
                 this.hadgehog.movingRight();
+                //let tree = document.getElementById("container"); 
+                //let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
+                console.log(this.hadgehog.positionX);
+                console.log(window.innerWidth);
+                console.log(tree.getBoundingClientRect().right);
+                console.log(window.innerWidth * this.hadgehog.positionX/100);
+                console.log(treeMiddle);
+                if (window.innerWidth * this.hadgehog.positionX/100 >= treeMiddle) {
+                    console.log("i`m inside if...")
+                    console.log(window.innerWidth * this.hadgehog.positionX/100);
+                    const applesDrop = setInterval(() => {
+                        this.apples.forEach((apple) => {
+                            apple.movingDown();
+                            if (apple.positionY < 0) {
+                                //clearInterval(applesDrop);
+                                apple.domElement.remove();
+                                this.apples.shift();
+                                console.log(apple.positionX);
+                            }
+                        })
+                    }, 600); 
+                
+                }
             }
             if(event.key === "ArrowDown"){
                 this.hadgehog.movingDown();
@@ -46,14 +86,14 @@ class Game {
 }
 
 class MovingParts {
-    constructor (height, width, positionX, positionY, idByClass){
+    constructor (height, width, positionX, positionY, idByClass, idParentContainer){
         this.height = height;
         this.width = width;
         this.positionX = positionX;
         this.positionY = positionY;
         this.domElement = null;
         this.idByClass = idByClass;
-
+        this.idParentContainer = idParentContainer;
         this.createDomElement();
     }
 
@@ -61,36 +101,31 @@ class MovingParts {
         // create dom element
         this.domElement = document.createElement('div');
         // set id and css
-        // windowWidth * vw / 100
+        
         if (window.innerWidth >= window.innerHeight) {
             this.domElement.style.width = window.innerHeight * this.height / 100 + "px";
-            console.log(window.innerWidth + ' --- ' + window.innerHeight);
-
+            this.domElement.style.height = this.height + "vh";
         } else {
-            this.domElement.style.height = window.innerWidth * this.width / 100 + "vh";
+            this.domElement.style.width = this.width + "vw";
+            this.domElement.style.height = window.innerWidth * this.width / 100 + "px";
         }
-
-
-
         this.domElement.className = this.idByClass;
-        //this.domElement.style.width = this.width + "vw";
-        //this.domElement.style.height = this.height + "vh";
         this.domElement.style.bottom = this.positionY + "vh";
-        this.domElement.style.left = this.positionX + "vw";
+        this.domElement.style.left = this.positionX + "%";
         //this.domElement.style.backgroundImage = "url('/oop-game-codealong/images/player-left.png')"
         // append to the dom
-        const boardElm = document.getElementById("board");
+        const boardElm = document.getElementById(this.idParentContainer);
         boardElm.appendChild(this.domElement)
     }
 
     movingLeft() {
         this.positionX--;
-        this.domElement.style.left = this.positionX + "vw";
+        this.domElement.style.left = this.positionX + "%";
     }
 
     movingRight() {
         this.positionX++;
-        this.domElement.style.left = this.positionX + "vw";
+        this.domElement.style.left = this.positionX + "%";
     }
 
     movingDown() {
@@ -105,15 +140,15 @@ class MovingParts {
 }
 
 class Hadgehog extends MovingParts {
-    constructor (height, width, positionX, positionY, idByClass){
-        super(height, width, positionX, positionY, idByClass);
+    constructor (height, width, positionX, positionY, idByClass, idParentContainer){
+        super(height, width, positionX, positionY, idByClass, idParentContainer);
       
     }
 }
 
 class Apple extends MovingParts {
-    constructor (height, width, positionX, positionY, idByClass){
-        super(height, width, positionX, positionY, idByClass);
+    constructor (height, width, positionX, positionY, idByClass, idParentContainer){
+        super(height, width, positionX, positionY, idByClass, idParentContainer);
        
     }
 }
