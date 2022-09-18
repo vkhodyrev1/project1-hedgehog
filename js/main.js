@@ -2,6 +2,7 @@ class Game {
     constructor (){
         this.hadgehog = null; //will store an instance of the class Player
         this.apples = []; //will store instances of the class Obstacle
+        this.applesDropped = [];
     }
     start() {
         this.hadgehog = new Hadgehog (10, 10, 50, 0, "hadgehog", "board");
@@ -9,71 +10,148 @@ class Game {
         
         let appleWidth = 5;
         let appleHeigth = appleWidth;
-        const applesAppear = setInterval(() => {
-            
-            let randomAppleX = Math.floor(Math.random()*(101 - appleWidth));
-            let randomAppleY = Math.floor(Math.random()*(61 - appleHeigth) + 40);
-            const appleInstance = new Apple(5, appleWidth, randomAppleX, randomAppleY, "apple", "container");
-            this.apples.push(appleInstance);
-            if (this.apples.length >10) {
-                clearInterval(applesAppear);
-            }
-            
-        }, 1000);
         
+        if (this.applesDropped.length === 0) {
+            //console.log(this.applesDropped);
+            const applesAppear = setInterval(() => {
+                
+                let randomAppleX = Math.floor(Math.random()*(51 - appleWidth) + 50);
+                let randomAppleY = Math.floor(Math.random()*(61 - appleHeigth) + 40);
+                const appleInstance = new Apple(5, appleWidth, randomAppleX, randomAppleY, "apple", "board");
+                this.apples.push(appleInstance);
+                if (this.apples.length >10) {
+                    clearInterval(applesAppear);
+                }
+                
+            }, 10);
+        }
         
     }
 
     shakeTree () {
         const applesDrop = setInterval(() => {
-            this.apples.forEach((apple) => {
+            this.apples.forEach((apple, index) => {
                 //apple.movingDown();
                 
                 if (apple.positionY > apple.stopPosition) {
                     //clearInterval(applesDrop);
                     //apple.domElement.remove();
-                    //this.apples.shift();
+                    
                     //console.log(this.apples);
                     apple.movingDown();
                     
+                } else {
+                    this.applesDropped.push(this.apples.splice(index, 1)[0]);
+                    //if (this.applesDropped.length === this.apples.length) {
+                    //    console.log(this.apples.length);
+                    //    //this.apples = [];
+                    //    //console.log(apple);
+                    //    clearInterval(applesDrop);
+                    //    
+                    //} else {
+                    //    this.applesDropped.push(this.apples[index]);
+                    //}
                 }
-                this.detectCollision(apple);
+                
                 //console.log(apple);
             })
+            
             //console.log(this.apples);
+            //console.log(this.applesDropped);
         }, 60);
     }
 
     attachEventListeners () {
-        
+        let shaked = false;
+        let pickedUp;
         document.addEventListener("keydown", (event) => {
             
                 //let tree = document.getElementById("container"); 
                 //let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
             if (event.key === "ArrowLeft") {
                 this.hadgehog.movingLeft();
-                if (this.detectCollision(this.hadgehog, event.key)) {
+                
+                if (this.detectCollisionTree(this.hadgehog) && !shaked) {
                     
                     this.shakeTree();
+                    shaked = true;
+                } else  if (pickedUp === undefined) {
+                    console.log(this.applesDropped);
+                    this.applesDropped.forEach((droppedApple, index)  => {
+                        if (this.detectCollisionApple(droppedApple)) {
+                            console.log(droppedApple);
+                            pickedUp = index;
+
+                        };
+                        
+                    })    
+                } else {
+                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
             } else if (event.key === "ArrowRight"){
                 this.hadgehog.movingRight();
                 
-                if (this.detectCollision(this.hadgehog, event.key)) {
+                if (this.detectCollisionTree(this.hadgehog) && !shaked) {
                     
                     this.shakeTree();
+                    shaked = true;
+                } else  if (pickedUp === undefined) {
+                    console.log(this.applesDropped);
+                    this.applesDropped.forEach((droppedApple, index)  => {
+                        if (this.detectCollisionApple(droppedApple)) {
+                            console.log(droppedApple);
+                            pickedUp = index;
+
+                        };
+                        
+                    })    
+                } else {
+                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
 
             }
             if(event.key === "ArrowDown"){
                 this.hadgehog.movingDown();
+                if (pickedUp >= 0) {
+                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                }
             }else if(event.key === "ArrowUp"){
                 this.hadgehog.movingUp();
+                if (pickedUp >= 0) {
+                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                }
             }
             
         });
     }
-
+    detectCollisionTree(playerInstance) {
+        let tree = document.getElementById("container"); 
+            let treeMiddle = ((tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + 
+            tree.getBoundingClientRect().left)*100/window.innerWidth;
+            if (playerInstance.positionX -2 < treeMiddle && 
+                playerInstance.positionX + 4 > treeMiddle && playerInstance.positionY > 3) {
+                    return true;
+                } else {
+                    return false;
+                }
+            
+    }
+    detectCollisionApple(playerInstance) {
+        if (this.hadgehog.positionX < playerInstance.positionX + playerInstance.width &&
+            this.hadgehog.positionX + this.hadgehog.width > playerInstance.positionX &&
+            this.hadgehog.positionY < playerInstance.positionY + playerInstance.height &&
+            this.hadgehog.height + this.hadgehog.positionY > playerInstance.positionY) {
+                //console.log(this.hadgehog.positionX+'..<..'+playerInstance.positionX+'..+..'+playerInstance.width+'..&..'+
+                //    this.hadgehog.positionX+'..+..'+this.hadgehog.width+'..>..'+playerInstance.positionX+'..&..'+
+                //    this.hadgehog.positionY+'..<..'+playerInstance.positionY+'..+..'+playerInstance.height+'..&..'+
+                //    this.hadgehog.height+'..+..'+this.hadgehog.positionY+'..>..'+playerInstance.positionY);
+            //console.log(playerInstance);
+            return true;
+        } else {
+            return false;
+        }
+    }
+/*
     detectCollision(playerInstance, ev) {
         if (ev) {
             let tree = document.getElementById("container"); 
@@ -95,12 +173,14 @@ class Game {
                     //    this.hadgehog.positionX+'..+..'+this.hadgehog.width+'..>..'+playerInstance.positionX+'..&..'+
                     //    this.hadgehog.positionY+'..<..'+playerInstance.positionY+'..+..'+playerInstance.height+'..&..'+
                     //    this.hadgehog.height+'..+..'+this.hadgehog.positionY+'..>..'+playerInstance.positionY);
-                    this.hadgehog.pickUp(playerInstance);
-                    console.log(playerInstance);
+                //console.log(playerInstance);
+                return true;
+            } else {
+                return false;
             }
         }           
     }
-
+*/
 
 }
 
@@ -163,9 +243,21 @@ class Hadgehog extends MovingParts {
         super(height, width, positionX, positionY, idByClass, idParentContainer);
       
     }
-    pickUp (pickedUpApple) {
-        pickedUpApple.positionX = this.positionX;
-        pickedUpApple.positionY = this.positionY;
+    pickUp (pickedUpApple, hadgehogDriver) {
+        pickedUpApple.positionX = hadgehogDriver.positionX;
+        pickedUpApple.positionY = hadgehogDriver.positionY;
+        pickedUpApple.domElement.style.left = pickedUpApple.positionX + "%";
+        pickedUpApple.domElement.style.bottom = pickedUpApple.positionY + "vh";
+        //pickedUpApple.movingLeft = this.movingLeft;
+
+        //pickedUpApple.movingRight = this.movingRight;
+        //pickedUpApple.movingDown = this.movingDown;
+        //pickedUpApple.movingUp = this.movingUp;
+
+        console.log("Im picked up ...");
+        console.log(pickedUpApple);
+        //pickedUpApple = this.hadgehog;
+        //console.log(pickedUpApple);
     }
 }
 
