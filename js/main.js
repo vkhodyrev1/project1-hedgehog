@@ -5,10 +5,10 @@ class Game {
         this.applesDropped = [];
     }
     start() {
-        this.hadgehog = new Hadgehog (10, 10, 50, 0, "hadgehog", "board");
+        this.hadgehog = new Hadgehog (15, 15, 50, 0, "hadgehog", "board");
         this.attachEventListeners();
         
-        let appleWidth = 5;
+        let appleWidth = 8;
         let appleHeigth = appleWidth;
         
         if (this.applesDropped.length === 0) {
@@ -16,8 +16,9 @@ class Game {
             const applesAppear = setInterval(() => {
                 
                 let randomAppleX = Math.floor(Math.random()*(51 - appleWidth) + 50);
-                let randomAppleY = Math.floor(Math.random()*(61 - appleHeigth) + 40);
-                const appleInstance = new Apple(5, appleWidth, randomAppleX, randomAppleY, "apple", "board");
+                let limitY = 60 - (randomAppleX - 75)**2/10;
+                let randomAppleY = Math.floor(Math.random()*(limitY - appleHeigth) + 40);
+                const appleInstance = new Apple(appleHeigth, appleWidth, randomAppleX, randomAppleY, "apple", "board");
                 this.apples.push(appleInstance);
                 if (this.apples.length >10) {
                     clearInterval(applesAppear);
@@ -34,76 +35,74 @@ class Game {
                 //apple.movingDown();
                 
                 if (apple.positionY > apple.stopPosition) {
-                    //clearInterval(applesDrop);
-                    //apple.domElement.remove();
-                    
-                    //console.log(this.apples);
                     apple.movingDown();
                     
                 } else {
                     this.applesDropped.push(this.apples.splice(index, 1)[0]);
-                    //if (this.applesDropped.length === this.apples.length) {
-                    //    console.log(this.apples.length);
-                    //    //this.apples = [];
-                    //    //console.log(apple);
-                    //    clearInterval(applesDrop);
-                    //    
-                    //} else {
-                    //    this.applesDropped.push(this.apples[index]);
-                    //}
                 }
-                
-                //console.log(apple);
             })
-            
-            //console.log(this.apples);
-            //console.log(this.applesDropped);
         }, 60);
     }
 
     attachEventListeners () {
         let shaked = false;
         let pickedUp;
+        let score = 0;
+        let corner = false;
+        let leftSideTree = false;
         document.addEventListener("keydown", (event) => {
             
-                //let tree = document.getElementById("container"); 
-                //let treeMiddle = (tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + tree.getBoundingClientRect().left;
             if (event.key === "ArrowLeft") {
-                this.hadgehog.movingLeft();
-                
-                if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
+                if (!corner) {
+                    this.hadgehog.movingLeft();
+                    leftSideTree = false;
+                }
                     
+                if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
+                    corner = true;
                     this.shakeTree();
                     shaked = true;
                 } else  if (pickedUp === undefined) {
                     //console.log(this.applesDropped);
                     this.applesDropped.forEach((droppedApple, index)  => {
                         if (this.detectCollisionApple(droppedApple)) {
-                            console.log(droppedApple);
+                            //console.log(droppedApple);
                             pickedUp = index;
 
                         };
                         
                     })    
                 } else {
-                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
-                    if (this.detectCollisionTree(this.hadgehog, "corner")) {
-                        console.log("I'm in the corner ...");
+                    
+                    if (this.detectCollisionTree(this.hadgehog, "corner") && !corner) {
+                        //console.log("I'm in the corner ...");
+                        this.applesDropped[pickedUp].positionX = 0;
+                        this.applesDropped[pickedUp].positionY = pickedUp*this.applesDropped[pickedUp].height;
+                        this.applesDropped[pickedUp].domElement.style.left = this.applesDropped[pickedUp].positionX + "%";
+                        this.applesDropped[pickedUp].domElement.style.bottom = this.applesDropped[pickedUp].positionY + "vh";
+                        corner = true;
+                        pickedUp = undefined;
+                        score += 5;
+                        document.querySelector("h2 span").innerText = score + " points";
+                    } else {
+                        this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                     }
                     
                 }
             } else if (event.key === "ArrowRight"){
-                this.hadgehog.movingRight();
-                
+                if (!leftSideTree) {
+                    this.hadgehog.movingRight();
+                    corner = false;
+                }
                 if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
-                    
+                    leftSideTree = true;
                     this.shakeTree();
                     shaked = true;
                 } else  if (pickedUp === undefined) {
-                    console.log(this.applesDropped);
+                    //console.log(this.applesDropped);
                     this.applesDropped.forEach((droppedApple, index)  => {
                         if (this.detectCollisionApple(droppedApple)) {
-                            console.log(droppedApple);
+                            //console.log(droppedApple);
                             pickedUp = index;
 
                         };
@@ -134,6 +133,7 @@ class Game {
             tree.getBoundingClientRect().left)*100/window.innerWidth;
             if (playerInstance.positionX -2 < treeMiddle && 
                 playerInstance.positionX + 4 > treeMiddle && playerInstance.positionY > 1 && playerInstance.positionY < 10) {
+                    
                     return true;
                 } else {
                     return false;
@@ -145,7 +145,7 @@ class Game {
             this.hadgehog.positionX + this.hadgehog.width > playerInstance.positionX &&
             this.hadgehog.positionY < playerInstance.positionY + playerInstance.height &&
             this.hadgehog.height + this.hadgehog.positionY > playerInstance.positionY) {
-    
+            //console.log("I'm in the collision ...");
             return true;
         } else {
             return false;
@@ -188,23 +188,39 @@ class MovingParts {
     }
 
     movingLeft() {
-        this.positionX--;
-        this.domElement.style.left = this.positionX + "%";
+        if (this.positionX > 0) {
+            this.positionX--;
+            this.domElement.style.left = this.positionX + "%";
+        } else {
+            this.positionX = 0;
+        }
     }
 
     movingRight() {
-        this.positionX++;
-        this.domElement.style.left = this.positionX + "%";
+        if (this.positionX < 95) {
+            this.positionX++;
+            this.domElement.style.left = this.positionX + "%";
+    } else {
+        this.positionX = 100;
+    }
     }
 
     movingDown() {
-        this.positionY--;
-        this.domElement.style.bottom = this.positionY + "vh";
+        if (this.positionY > 0) {
+            this.positionY--;
+            this.domElement.style.bottom = this.positionY + "vh";
+        } else {
+        this.positionY = 0;
+    }
     }
 
     movingUp() {
+    if (this.positionY < 100-this.height) {
         this.positionY++;
         this.domElement.style.bottom = this.positionY + "vh";
+    } else {
+        this.positionY = 100;
+    }
     }
 }
 
@@ -218,16 +234,10 @@ class Hadgehog extends MovingParts {
         pickedUpApple.positionY = hadgehogDriver.positionY;
         pickedUpApple.domElement.style.left = pickedUpApple.positionX + "%";
         pickedUpApple.domElement.style.bottom = pickedUpApple.positionY + "vh";
-        //pickedUpApple.movingLeft = this.movingLeft;
-
-        //pickedUpApple.movingRight = this.movingRight;
-        //pickedUpApple.movingDown = this.movingDown;
-        //pickedUpApple.movingUp = this.movingUp;
-
-        console.log("Im picked up ...");
-        console.log(pickedUpApple);
-        //pickedUpApple = this.hadgehog;
+        
+        //console.log("Im picked up ...");
         //console.log(pickedUpApple);
+        
     }
 }
 
