@@ -71,12 +71,12 @@ class Game {
             if (event.key === "ArrowLeft") {
                 this.hadgehog.movingLeft();
                 
-                if (this.detectCollisionTree(this.hadgehog) && !shaked) {
+                if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
                     
                     this.shakeTree();
                     shaked = true;
                 } else  if (pickedUp === undefined) {
-                    console.log(this.applesDropped);
+                    //console.log(this.applesDropped);
                     this.applesDropped.forEach((droppedApple, index)  => {
                         if (this.detectCollisionApple(droppedApple)) {
                             console.log(droppedApple);
@@ -87,11 +87,15 @@ class Game {
                     })    
                 } else {
                     this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                    if (this.detectCollisionTree(this.hadgehog, "corner")) {
+                        console.log("I'm in the corner ...");
+                    }
+                    
                 }
             } else if (event.key === "ArrowRight"){
                 this.hadgehog.movingRight();
                 
-                if (this.detectCollisionTree(this.hadgehog) && !shaked) {
+                if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
                     
                     this.shakeTree();
                     shaked = true;
@@ -124,12 +128,12 @@ class Game {
             
         });
     }
-    detectCollisionTree(playerInstance) {
-        let tree = document.getElementById("container"); 
+    detectCollisionTree(playerInstance, target) {
+        let tree = document.getElementById(target); 
             let treeMiddle = ((tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + 
             tree.getBoundingClientRect().left)*100/window.innerWidth;
             if (playerInstance.positionX -2 < treeMiddle && 
-                playerInstance.positionX + 4 > treeMiddle && playerInstance.positionY > 3) {
+                playerInstance.positionX + 4 > treeMiddle && playerInstance.positionY > 1 && playerInstance.positionY < 10) {
                     return true;
                 } else {
                     return false;
@@ -141,46 +145,12 @@ class Game {
             this.hadgehog.positionX + this.hadgehog.width > playerInstance.positionX &&
             this.hadgehog.positionY < playerInstance.positionY + playerInstance.height &&
             this.hadgehog.height + this.hadgehog.positionY > playerInstance.positionY) {
-                //console.log(this.hadgehog.positionX+'..<..'+playerInstance.positionX+'..+..'+playerInstance.width+'..&..'+
-                //    this.hadgehog.positionX+'..+..'+this.hadgehog.width+'..>..'+playerInstance.positionX+'..&..'+
-                //    this.hadgehog.positionY+'..<..'+playerInstance.positionY+'..+..'+playerInstance.height+'..&..'+
-                //    this.hadgehog.height+'..+..'+this.hadgehog.positionY+'..>..'+playerInstance.positionY);
-            //console.log(playerInstance);
+    
             return true;
         } else {
             return false;
         }
     }
-/*
-    detectCollision(playerInstance, ev) {
-        if (ev) {
-            let tree = document.getElementById("container"); 
-            let treeMiddle = ((tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + 
-            tree.getBoundingClientRect().left)*100/window.innerWidth;
-            if ((ev === "ArrowLeft" && playerInstance.positionX -2 < treeMiddle || ev === "ArrowRight" && 
-            playerInstance.positionX + 4 > treeMiddle) && playerInstance.positionY > 3) {
-                //console.log(treeMiddle + ' --- ' + playerInstance.positionX);
-                return true;
-            } else {
-                return false;
-            }
-        } else { 
-            if (this.hadgehog.positionX < playerInstance.positionX + playerInstance.width &&
-                this.hadgehog.positionX + this.hadgehog.width > playerInstance.positionX &&
-                this.hadgehog.positionY < playerInstance.positionY + playerInstance.height &&
-                this.hadgehog.height + this.hadgehog.positionY > playerInstance.positionY) {
-                    //console.log(this.hadgehog.positionX+'..<..'+playerInstance.positionX+'..+..'+playerInstance.width+'..&..'+
-                    //    this.hadgehog.positionX+'..+..'+this.hadgehog.width+'..>..'+playerInstance.positionX+'..&..'+
-                    //    this.hadgehog.positionY+'..<..'+playerInstance.positionY+'..+..'+playerInstance.height+'..&..'+
-                    //    this.hadgehog.height+'..+..'+this.hadgehog.positionY+'..>..'+playerInstance.positionY);
-                //console.log(playerInstance);
-                return true;
-            } else {
-                return false;
-            }
-        }           
-    }
-*/
 
 }
 
