@@ -6,17 +6,6 @@ class Game {
         this.obstacles = [];
     }
     start() {
-        
-
-        //let hadgehogWidth = 15;
-        //let hadgehogHeigth = 15;
-//
-        //let appleWidth = 8;
-        //let appleHeigth = 8;
-//
-        //let obstacleWidth = 15;
-        //let obstacleHeigth = 10;
-        //let sizes = [[15, 8, 15], [15, 8, 10]];
         let sizes = [
             {
                 width: 15,
@@ -43,14 +32,14 @@ class Game {
             })
         }
         //console.log(sizes);
-        this.hadgehog = new Hadgehog (sizes[0].heigth, sizes[0].width, 50, 0, "hadgehog", "board", "url('/project1-hedgehog/images/hadgehogHome.png");
+        this.hadgehog = new Hadgehog (sizes[0].heigth, sizes[0].width, sizes[0].width, 0, "hadgehog", "board", "url('/project1-hedgehog/images/hadgehogHome.png");
         this.attachEventListeners();
 
         if (this.applesDropped.length === 0) {
             //console.log(this.applesDropped);
             const applesAppear = setInterval(() => {
                 
-                let randomAppleX = Math.floor(Math.random()*(51 - sizes[1].width) + 50);
+                let randomAppleX = Math.floor(Math.random()*(45 - sizes[1].width) + 52);
                 let limitY = 60 - (randomAppleX - 75)**2/10;
                 let randomAppleY = Math.floor(Math.random()*(limitY - sizes[1].heigth) + 40);
                 const appleInstance = new Apple(sizes[1].heigth, sizes[1].width, randomAppleX, randomAppleY, "apple", "board", "url('/project1-hedgehog/images/apple.png')");
@@ -80,8 +69,8 @@ class Game {
                 if (this.detectCollisionApple(obstacle)) {
                     clearInterval(obstaclesDrop);
                     clearInterval(obstaclesAppear);
+                    location.href = 'gameover.html';
                     
-                    console.log("It's game over ...");
                 } else    
                 if (obstacle.positionY <= 0) {
                     obstacle.domElement.remove();
@@ -121,6 +110,7 @@ class Game {
             
             if (event.key === "ArrowLeft") {
                 if (!corner) {
+                    this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogMoveLeft.png";
                     this.hadgehog.movingLeft();
                     leftSideTree = false;
                 }
@@ -151,6 +141,9 @@ class Game {
                         pickedUp = undefined;
                         score += 5;
                         document.querySelector("h2 span").innerText = score + " points";
+                        if (score === this.applesDropped.length*5) {
+                            location.href = 'win.html';
+                        }
                     } else {
                         
                         this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
@@ -159,10 +152,14 @@ class Game {
                 }
             } else if (event.key === "ArrowRight"){
                 if (!leftSideTree) {
+                    this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogMoveRight.png";
                     this.hadgehog.movingRight();
+                    
+                    console.log(this.hadgehog.backgroundImage);
                     corner = false;
                 }
                 if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
+                    
                     leftSideTree = true;
                     this.shakeTree();
                     shaked = true;
@@ -182,14 +179,16 @@ class Game {
 
             }
             if(event.key === "ArrowDown"){
+                this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogDown1.png";
                 this.hadgehog.movingDown();
-                if (pickedUp >= 0) {
-                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
-                }
+                //if (pickedUp >= 0) {
+                //    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                //}
             }else if(event.key === "ArrowUp"){
-                this.hadgehog.movingUp();
-                if (pickedUp >= 0) {
-                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogUp1.png";
+                //this.hadgehog.movingUp();
+                if (this.hadgehog.positionY < 27) {
+                    this.hadgehog.movingUp();
                 }
             }
             
@@ -269,15 +268,17 @@ class MovingParts {
         } else {
             this.positionX = 0;
         }
+        this.domElement.style.backgroundImage = this.backgroundImage;
     }
 
     movingRight() {
-        if (this.positionX < 95) {
+        if (this.positionX < 100 - this.width) {
             this.positionX++;
             this.domElement.style.left = this.positionX + "vw";
-    } else {
-        this.positionX = 100;
-    }
+        } else {
+            this.positionX = 100- this.width;
+        }
+        this.domElement.style.backgroundImage = this.backgroundImage;
     }
 
     movingDown() {
@@ -285,17 +286,19 @@ class MovingParts {
             this.positionY--;
             this.domElement.style.bottom = this.positionY + "vh";
         } else {
-        this.positionY = 0;
-    }
+            this.positionY = 0;
+        }
+        this.domElement.style.backgroundImage = this.backgroundImage;
     }
 
     movingUp() {
-    if (this.positionY < 100-this.height) {
-        this.positionY++;
-        this.domElement.style.bottom = this.positionY + "vh";
-    } else {
-        this.positionY = 100;
-    }
+        if (this.positionY < 100 - this.height) {
+            this.positionY++;
+            this.domElement.style.bottom = this.positionY + "vh";
+        } else {
+            this.positionY = 100 - this.height;
+        }
+        this.domElement.style.backgroundImage = this.backgroundImage;
     }
 }
 
@@ -305,8 +308,8 @@ class Hadgehog extends MovingParts {
       
     }
     pickUp (pickedUpApple, hadgehogDriver) {
-        pickedUpApple.positionX = hadgehogDriver.positionX;
-        pickedUpApple.positionY = hadgehogDriver.positionY;
+        pickedUpApple.positionX = hadgehogDriver.positionX + (hadgehogDriver.width - pickedUpApple.width)/2;
+        pickedUpApple.positionY = hadgehogDriver.positionY + hadgehogDriver.height/2;
         pickedUpApple.domElement.style.left = pickedUpApple.positionX + "vw";
         pickedUpApple.domElement.style.bottom = pickedUpApple.positionY + "vh";
         

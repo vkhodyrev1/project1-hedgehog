@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+    padding: 0;  
+}
+
+#win {
+    display: flex;
+    height: 100vh;
+    position: relative;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#win img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+#win a {
+    position: absolute;
+    
+    font-size: 3vw;
+    margin: 10vh 0;
+    padding: 3vh 5vw;
+    background-color: rgba(241, 238, 45, 0.269);
+    text-decoration: none;
+    border: 10px solid rgb(111, 10, 59);
+    border-radius: 50%;
+    color: rgb(252, 6, 6);
+}

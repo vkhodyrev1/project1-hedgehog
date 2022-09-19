@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#finish {
+    display: flex;
+    height: 100vh;
+    position: relative;
+    justify-content: center;
+    align-items: end;
+}
+
+#finish img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+#finish a {
+    position: absolute;
+    
+    
+    
+
+    background-color: rgba(241, 238, 45, 0.269);
+    text-decoration: none;
+    border: 5px solid rgb(111, 10, 59);
+    border-radius: 50%;
+    color: rgb(252, 6, 6);
+}
+
+#play {
+    bottom: 30vh;
+    font-size: 3vw;
+    padding: 3vh 5vw;
+}
+
+#quit {
+    bottom: 2vh;
+    font-size: 1.5vw;
+    padding: 3.5vh 1vw;
+}
