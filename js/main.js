@@ -44,10 +44,9 @@ class Game {
                 let randomAppleY = Math.floor(Math.random()*(limitY - sizes[1].heigth) + 40);
                 const appleInstance = new Apple(sizes[1].heigth, sizes[1].width, randomAppleX, randomAppleY, "apple", "board", "url('/project1-hedgehog/images/apple.png')");
                 this.apples.push(appleInstance);
-                if (this.apples.length >10) {
+                if (this.apples.length > 10) {
                     clearInterval(applesAppear);
                 }
-                
             }, 10);
         }
 
@@ -182,13 +181,14 @@ class Game {
                 this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogDown1.png";
                 this.hadgehog.movingDown();
                 //if (pickedUp >= 0) {
-                //    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 //}
             }else if(event.key === "ArrowUp"){
                 this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogUp1.png";
                 //this.hadgehog.movingUp();
                 if (this.hadgehog.positionY < 27) {
                     this.hadgehog.movingUp();
+                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
             }
             

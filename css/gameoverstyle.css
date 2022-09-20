@@ -19,13 +19,9 @@ body {
 
 #finish a {
     position: absolute;
-    
-    
-    
-
     background-color: rgba(241, 238, 45, 0.269);
     text-decoration: none;
-    border: 5px solid rgb(111, 10, 59);
+    border: 2px solid rgb(111, 10, 59);
     border-radius: 50%;
     color: rgb(252, 6, 6);
 }

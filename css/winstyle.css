@@ -19,13 +19,22 @@ body {
 
 #win a {
     position: absolute;
-    
-    font-size: 3vw;
-    margin: 10vh 0;
-    padding: 3vh 5vw;
     background-color: rgba(241, 238, 45, 0.269);
     text-decoration: none;
-    border: 10px solid rgb(111, 10, 59);
+    border: 2px solid rgb(111, 10, 59);
     border-radius: 50%;
     color: rgb(252, 6, 6);
+}
+
+#play {
+    margin: 10vh 0;
+    font-size: 3vw;
+    padding: 3vh 5vw;
+}
+
+#quit {
+    right: 2vw;
+    bottom: 2vh;
+    font-size: 1.5vw;
+    padding: 3.5vh 1vw;
 }

@@ -66,12 +66,15 @@ h2 {
     background-color: aqua;
 }
 
-.btn {
+#quit {
+    right: 2vw;
+    bottom: 2vh;
+    font-size: 1.5vw;
+    padding: 3.5vh 1vw;
     position: absolute;
-    bottom: 3vh;
-    left: 43vw;
-    padding: 3vh 1vw;
+    background-color: rgba(241, 238, 45, 0.269);
+    text-decoration: none;
+    border: 2px solid rgb(111, 10, 59);
     border-radius: 50%;
-    color: blueviolet;
-    background-color: rgb(84, 167, 251);
+    color: rgb(252, 6, 6);
 }
