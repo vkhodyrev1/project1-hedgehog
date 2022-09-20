@@ -118,7 +118,7 @@ class Game {
                     corner = true;
                     this.shakeTree();
                     shaked = true;
-                } else  if (pickedUp === undefined) {
+                } else  if (pickedUp === undefined && this.hadgehog.positionX > this.hadgehog.width*3) {
                     //console.log(this.applesDropped);
                     this.applesDropped.forEach((droppedApple, index)  => {
                         if (this.detectCollisionApple(droppedApple)) {
@@ -162,7 +162,7 @@ class Game {
                     leftSideTree = true;
                     this.shakeTree();
                     shaked = true;
-                } else  if (pickedUp === undefined) {
+                } else  if (pickedUp === undefined && this.hadgehog.positionX > this.hadgehog.width*3) {
                     //console.log(this.applesDropped);
                     this.applesDropped.forEach((droppedApple, index)  => {
                         if (this.detectCollisionApple(droppedApple)) {
@@ -322,7 +322,7 @@ class Hadgehog extends MovingParts {
 class Apple extends MovingParts {
     constructor (height, width, positionX, positionY, idByClass, idParentContainer, backgroundImage){
         super(height, width, positionX, positionY, idByClass, idParentContainer, backgroundImage);
-        this.stopPosition = Math.floor(Math.random()*30);
+        this.stopPosition = Math.floor(Math.random()*27);
     }
     
 }
