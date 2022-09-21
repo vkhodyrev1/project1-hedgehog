@@ -5,18 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-----------<link rel="stylesheet" href="./css/style.css"></link>---------->
     <link rel="stylesheet" href="./css/style.css"></link>
 </head>
 <body>
-    <div id="board">   
-        <img src = "images/picture1.png" /> 
+    <div id="board">  
+        <img id = "gamepicture" src = "images/picture1.png" /> 
+        <img id = "startpicture" src = "images/startgame.png" />
+        <img id = "gameoverpicture" src = "images/gameover.png" />
+        <img id = "winpicture" src = "images/win.png" /> 
+        <button id = "btnstart" type="button">START GAME</button>
+        <a id = "play" href="./index.html">Play again</a>
+        <div id = "yourlevel"><h3>Your LEVEL: <span>0</span></h3></div>
         <div id = "redapple" class = "tree">
             <img src = "images/tree.png" />
         </div>
         <div id="corner">
-            <h2>Score: <span>00 points</span></h2>
+            <h3>Score: <span>00 points</span></h3>
         </div>
-        <a id = "quit" href="./startgame.html">QUIT</a>
+        <button id = "quit" type="button">QUIT</button>
+        <div id = "startlevel">
+            <button class="level" id = "level1" type="button">LEVEL 1</button>
+            <button class="level" id = "level2" type="button">LEVEL 2</button>
+            <button class="level" id = "level3" type="button">LEVEL 3</button>
+        </div>
+        
     </div>
     
     <script src="./js/main.js"></script>

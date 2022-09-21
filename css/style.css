@@ -1,72 +1,78 @@
+/*--------- index style -------------*/
 body {
     margin: 0;
     padding: 0;
-      
 }
-
 #board {
-    
     height: 100vh;
     position: relative;
 }
-
 #board img {
     height: 100%;
     width: 100%;
     position: absolute;
 }
-
+#gamepicture {
+    visibility: hidden;
+}
+#startpicture {
+    visibility: visible;
+}
+#gameoverpicture {
+    visibility: hidden;
+}
+#winpicture {
+    visibility: hidden;
+}
 .hadgehog {
     background-position: 0 0;
     background-repeat: no-repeat;
     background-size: 100%;
     position: absolute;
 }
-
 .apple {
     background-position: 0 0;
     background-repeat: no-repeat;
     background-size: 100%;
     position: absolute;
 }
-
 .obstacle {
     background-position: 0 0;
     background-repeat: no-repeat;
     background-size: 100%;
     position: absolute;
 }
-
 #redapple {
     width: 50vw;
     height: 100%;
     right: 0vh;
-    
+    visibility: hidden;
     position: absolute;
 }
-
-
 #redapple img {
     height: 100%;
     width: 100%;
     position: absolute;
 }
-
 #corner {
     width: 15vw;
     height: 100%;
     left: 0vh;
-    
     position: absolute;
 }
-
-h2 {
+h3 {
     color: crimson;
     text-align: center;
     background-color: aqua;
 }
-
+#yourlevel {
+    width: 15vw;
+    visibility: hidden;
+    position: absolute;
+    left: 42.5vw;
+}
 #quit {
+    visibility: hidden;
     right: 2vw;
     bottom: 2vh;
     font-size: 1.5vw;
@@ -78,3 +84,51 @@ h2 {
     border-radius: 50%;
     color: rgb(252, 6, 6);
 }
+
+#btnstart {
+    visibility: visible;
+    position: absolute;
+    font-size: 3vw;
+    margin: 27vh 0;
+    padding: 3vh 5vw;
+    background-color: rgba(241, 238, 45, 0.269);
+    text-decoration: none;
+    border: 2px solid rgb(111, 10, 59);
+    border-radius: 50%;
+    color: rgb(252, 6, 6);
+    bottom: 0;
+    left: 35vw;
+}
+#startlevel {
+    display: flex;
+    position: absolute;
+    left: 5vh;
+    top: 10vh;
+    flex-direction: column;
+}
+.level {
+    margin: 1vh 1vw;
+    padding: 1vh 1vw;
+    border: 2px solid rgb(111, 10, 59);
+    border-radius: 50%;
+    background-color: rgba(219, 229, 38, 0.623);
+}
+.level:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+  }
+
+#play {
+    visibility: hidden;
+    position: absolute;
+    background-color: rgba(241, 238, 45, 0.269);
+    text-decoration: none;
+    border: 2px solid rgb(111, 10, 59);
+    border-radius: 50%;
+    color: rgb(252, 6, 6);
+    bottom: 30vh;
+    font-size: 3vw;
+    padding: 3vh 5vw;
+    left: 35vw;
+}
+

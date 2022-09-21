@@ -1,9 +1,10 @@
 class Game {
-    constructor (){
+    constructor (level){
         this.hadgehog = null; //will store an instance of the class Player
         this.apples = []; //will store instances of the class Obstacle
         this.applesDropped = [];
         this.obstacles = [];
+        this.level = level;
     }
     start() {
         let sizes = [
@@ -20,6 +21,30 @@ class Game {
                 heigth: 10
             }
         ]
+        const startlevel = document.getElementById("startlevel");
+        const yourlevelspan = document.querySelector("#yourlevel h3 span");
+        const yourlevel = document.getElementById("yourlevel");
+        switch (this.level) {
+            case 0:
+                startlevel.style.visibility = 'hidden';
+                yourlevel.style.width = "auto";
+                yourlevel.style.left = "15vw";
+                yourlevelspan.innerText = "00 Please RESTART GAME AND CHOOSE LEVEL! Or use this level for training!";
+            break;
+            case 5:
+                startlevel.style.visibility = 'hidden';
+                yourlevelspan.innerText = "01";
+            break;
+            case 10:
+                startlevel.style.visibility = 'hidden';
+                yourlevelspan.innerText = "02";
+            break;
+            case 15:
+                startlevel.style.visibility = 'hidden';
+                yourlevelspan.innerText = "03";
+            break;
+            
+        }
         if (window.innerWidth >= window.innerHeight) {
             sizes.forEach((widthItem) => {
                 widthItem.width = widthItem.width*window.innerHeight/window.innerWidth;
@@ -34,7 +59,7 @@ class Game {
         //console.log(sizes);
         this.hadgehog = new Hadgehog (sizes[0].heigth, sizes[0].width, sizes[0].width, 0, "hadgehog", "board", "url('/project1-hedgehog/images/hadgehogHome.png");
         this.attachEventListeners();
-
+        
         if (this.applesDropped.length === 0) {
             //console.log(this.applesDropped);
             const applesAppear = setInterval(() => {
@@ -44,7 +69,7 @@ class Game {
                 let randomAppleY = Math.floor(Math.random()*(limitY - sizes[1].heigth) + 40);
                 const appleInstance = new Apple(sizes[1].heigth, sizes[1].width, randomAppleX, randomAppleY, "apple", "board", "url('/project1-hedgehog/images/apple.png')");
                 this.apples.push(appleInstance);
-                if (this.apples.length > 10) {
+                if (this.apples.length > this.level) {
                     clearInterval(applesAppear);
                 }
             }, 10);
@@ -68,16 +93,20 @@ class Game {
                 if (this.detectCollisionApple(obstacle)) {
                     clearInterval(obstaclesDrop);
                     clearInterval(obstaclesAppear);
-                    location.href = 'gameover.html';
-                    
+                    const gamepicture = document.getElementById("gamepicture");
+                    const gameoverpicture = document.getElementById("gameoverpicture");
+                    const play = document.getElementById("play");
+                    const redapple = document.getElementById("redapple");
+
+                    gamepicture.style.visibility = 'hidden';
+                    gameoverpicture.style.visibility = 'visible';
+                    play.style.visibility = 'visible';
+                    redapple.style.visibility = 'hidden';
                 } else    
                 if (obstacle.positionY <= 0) {
                     obstacle.domElement.remove();
                     this.obstacles.shift();
-                    
                 }
-                    
-                
             })
         }, 60);
     }
@@ -124,9 +153,7 @@ class Game {
                         if (this.detectCollisionApple(droppedApple)) {
                             //console.log(droppedApple);
                             pickedUp = index;
-
                         };
-                        
                     })    
                 } else {
                     
@@ -139,12 +166,24 @@ class Game {
                         corner = true;
                         pickedUp = undefined;
                         score += 5;
-                        document.querySelector("h2 span").innerText = score + " points";
+                        console.log("I'm in the corner ...");
+                        document.querySelector("#corner h3 span").innerText = score + " points";
                         if (score === this.applesDropped.length*5) {
-                            location.href = 'win.html';
+                            const gamepicture = document.getElementById("gamepicture");
+                            const winpicture = document.getElementById("winpicture");
+                            const play = document.getElementById("play");
+                            const redapple = document.getElementById("redapple");
+                            const startlevel = document.getElementById("startlevel");
+
+                            gamepicture.style.visibility = 'hidden';
+                            winpicture.style.visibility = 'visible';
+                            play.style.visibility = 'visible';
+                            play.style.bottom = '70vh';
+                            play.style.left = '40vw';
+                            startlevel.style.display = 'flex';
+                            redapple.style.visibility = 'hidden';
                         }
-                    } else {
-                        
+                    } else if (pickedUp !== undefined) {
                         this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                     }
                     
@@ -154,7 +193,7 @@ class Game {
                     this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogMoveRight.png";
                     this.hadgehog.movingRight();
                     
-                    console.log(this.hadgehog.backgroundImage);
+                    //console.log(this.hadgehog.backgroundImage);
                     corner = false;
                 }
                 if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
@@ -170,28 +209,26 @@ class Game {
                             pickedUp = index;
 
                         };
-                        
                     })    
-                } else {
-                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                } else if (pickedUp !== undefined) {
+                        this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
-
             }
-            if(event.key === "ArrowDown"){
+            if (event.key === "ArrowDown") {
                 this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogDown1.png";
                 this.hadgehog.movingDown();
-                //if (pickedUp >= 0) {
-                    this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
-                //}
-            }else if(event.key === "ArrowUp"){
-                this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogUp1.png";
-                //this.hadgehog.movingUp();
-                if (this.hadgehog.positionY < 27) {
-                    this.hadgehog.movingUp();
+                if (pickedUp !== undefined) {
                     this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
+            } else if (event.key === "ArrowUp"){
+                this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogUp1.png";
+                if (this.hadgehog.positionY < 27) {
+                    this.hadgehog.movingUp();
+                    if (pickedUp !== undefined) {
+                        this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
+                    }
+                }
             }
-            
         });
     }
     detectCollisionTree(playerInstance, target) {
@@ -241,21 +278,13 @@ class MovingParts {
     createDomElement(){
         // create dom element
         this.domElement = document.createElement('div');
-        // set id and css
-        
-        //if (window.innerWidth >= window.innerHeight) {
-        //    this.domElement.style.width = this.height + "vh";
-        //    this.domElement.style.height = this.height + "vh";
-        //} else {
-        //    this.domElement.style.width = this.width + "vw";
-        //    this.domElement.style.height = this.width + "vw";
-        //}
+       
         this.domElement.style.width = this.width + "vw";
         this.domElement.style.height = this.height + "vh";
         this.domElement.className = this.idByClass;
         this.domElement.style.bottom = this.positionY + "vh";
         this.domElement.style.left = this.positionX + "vw";
-        this.domElement.style.backgroundImage = this.backgroundImage;//"url('/oop-game-codealong/images/player-left.png')"
+        this.domElement.style.backgroundImage = this.backgroundImage;
         // append to the dom
         const boardElm = document.getElementById(this.idParentContainer);
         boardElm.appendChild(this.domElement)
@@ -312,10 +341,7 @@ class Hadgehog extends MovingParts {
         pickedUpApple.positionY = hadgehogDriver.positionY + hadgehogDriver.height/2;
         pickedUpApple.domElement.style.left = pickedUpApple.positionX + "vw";
         pickedUpApple.domElement.style.bottom = pickedUpApple.positionY + "vh";
-        
-        //console.log("Im picked up ...");
-        //console.log(pickedUpApple);
-        
+       
     }
 }
 
@@ -327,5 +353,52 @@ class Apple extends MovingParts {
     
 }
 
-const game = new Game();
-game.start();
+let game;
+let level = 0;
+let gameStarted = false;
+
+document.addEventListener("click", (event) => {
+    const startlevel = document.getElementById("startlevel");
+    const yourlevel = document.querySelector("#yourlevel h3 span");
+    switch (event.target.innerText) {
+        case "QUIT":
+            location.href = 'index.html';
+        break;
+        case "LEVEL 1":
+            level = 5;
+            startlevel.style.visibility = 'hidden';
+        break;
+        case "LEVEL 2":
+            level = 10;
+            startlevel.style.visibility = 'hidden';
+        break;
+        case "LEVEL 3":
+            level = 15;
+            startlevel.style.visibility = 'hidden';
+        break;
+        case "START GAME":
+            if (gameStarted === false) {   
+                game = new Game(level);
+                game.start();
+                gameStarted = true;
+            }
+            const gamepicture = document.getElementById("gamepicture");
+            const winpicture = document.getElementById("winpicture");
+            const gameoverpicture = document.getElementById("gameoverpicture");
+            const startpicture = document.getElementById("startpicture");
+            const quit = document.getElementById("quit");
+            const btnstart = document.getElementById("btnstart");
+            const redapple = document.getElementById("redapple");
+            const yourlevel = document.getElementById("yourlevel");
+            gamepicture.style.visibility = 'visible';
+            winpicture.style.visibility = 'hidden';
+            gameoverpicture.style.visibility = 'hidden';
+            startpicture.style.visibility = 'hidden';
+            redapple.style.visibility = 'visible';
+            btnstart.style.visibility = 'hidden';
+            yourlevel.style.visibility = 'visible';
+            quit.style.visibility = 'visible';
+            
+        break;
+    }
+});
