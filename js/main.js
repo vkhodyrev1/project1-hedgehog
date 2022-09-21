@@ -5,6 +5,7 @@ class Game {
         this.applesDropped = [];
         this.obstacles = [];
         this.level = level;
+        //this.gameover = false;
     }
     start() {
         let sizes = [
@@ -57,7 +58,7 @@ class Game {
             })
         }
         //console.log(sizes);
-        this.hadgehog = new Hadgehog (sizes[0].heigth, sizes[0].width, sizes[0].width, 0, "hadgehog", "board", "url('/project1-hedgehog/images/hadgehogHome.png");
+        this.hadgehog = new Hadgehog (sizes[0].heigth, sizes[0].width, sizes[0].width, 0, "hadgehog", "board", "url('./images/hadgehogHome.png");
         this.attachEventListeners();
         
         if (this.applesDropped.length === 0) {
@@ -67,7 +68,7 @@ class Game {
                 let randomAppleX = Math.floor(Math.random()*(45 - sizes[1].width) + 52);
                 let limitY = 60 - (randomAppleX - 75)**2/10;
                 let randomAppleY = Math.floor(Math.random()*(limitY - sizes[1].heigth) + 40);
-                const appleInstance = new Apple(sizes[1].heigth, sizes[1].width, randomAppleX, randomAppleY, "apple", "board", "url('/project1-hedgehog/images/apple.png')");
+                const appleInstance = new Apple(sizes[1].heigth, sizes[1].width, randomAppleX, randomAppleY, "apple", "board", "url('./images/apple.png')");
                 this.apples.push(appleInstance);
                 if (this.apples.length > this.level) {
                     clearInterval(applesAppear);
@@ -78,7 +79,7 @@ class Game {
         
         const obstaclesAppear = setInterval(() => {
             let randomObstacleX = Math.floor(Math.random()*40 + 10);
-            const obstacleInstance = new MovingParts(sizes[2].heigth, sizes[2].width, randomObstacleX, 100, "obstacle", "board", "url('/project1-hedgehog/images/owl.png')");
+            const obstacleInstance = new MovingParts(sizes[2].heigth, sizes[2].width, randomObstacleX, 100, "obstacle", "board", "url('./images/owl.png')");
             if (this.obstacles.length < 10) {
                 this.obstacles.push(obstacleInstance);
             }
@@ -90,9 +91,17 @@ class Game {
                 //console.log(obstacle);
                 
                 obstacle.movingDown();
-                if (this.detectCollisionApple(obstacle)) {
-                    clearInterval(obstaclesDrop);
+                const winpicture = document.getElementById("winpicture");
+                if (this.detectCollisionApple(obstacle) || winpicture.style.visibility === 'visible') {
+/* -------------- It's GAME OVER -------------------------------- */  
+                    //this.gameover = true;
+                    //document.removeEventListener("keydown", document.event);
+                    //clearInterval(obstaclesDrop);
+                    
+
                     clearInterval(obstaclesAppear);
+                    
+                    //removeEventListener("keydown", document.addEventListener)
                     const gamepicture = document.getElementById("gamepicture");
                     const gameoverpicture = document.getElementById("gameoverpicture");
                     const play = document.getElementById("play");
@@ -102,7 +111,7 @@ class Game {
                     gameoverpicture.style.visibility = 'visible';
                     play.style.visibility = 'visible';
                     redapple.style.visibility = 'hidden';
-                } else    
+                }    
                 if (obstacle.positionY <= 0) {
                     obstacle.domElement.remove();
                     this.obstacles.shift();
@@ -127,18 +136,20 @@ class Game {
             }
         }, 60);
     }
-
+    
     attachEventListeners () {
         let shaked = false;
         let pickedUp;
         let score = 0;
         let corner = false;
         let leftSideTree = false;
+        
         document.addEventListener("keydown", (event) => {
-            
+            const gameoverpicture = document.getElementById("gameoverpicture");
+            const winpicture = document.getElementById("winpicture");
             if (event.key === "ArrowLeft") {
-                if (!corner) {
-                    this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogMoveLeft.png";
+                if (!corner && gameoverpicture.style.visibility === 'hidden' && winpicture.style.visibility === 'hidden') {
+                    this.hadgehog.backgroundImage = "url('./images/hadgehogMoveLeft.png";
                     this.hadgehog.movingLeft();
                     leftSideTree = false;
                 }
@@ -169,8 +180,11 @@ class Game {
                         console.log("I'm in the corner ...");
                         document.querySelector("#corner h3 span").innerText = score + " points";
                         if (score === this.applesDropped.length*5) {
+/* ---------------------------------- It's WIN -------------------------------- */
+                            //clearInterval(obstaclesDrop);
+                            //clearInterval(obstaclesAppear);
                             const gamepicture = document.getElementById("gamepicture");
-                            const winpicture = document.getElementById("winpicture");
+                            
                             const play = document.getElementById("play");
                             const redapple = document.getElementById("redapple");
                             const startlevel = document.getElementById("startlevel");
@@ -189,8 +203,8 @@ class Game {
                     
                 }
             } else if (event.key === "ArrowRight"){
-                if (!leftSideTree) {
-                    this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogMoveRight.png";
+                if (!leftSideTree && gameoverpicture.style.visibility === 'hidden' && winpicture.style.visibility === 'hidden') {
+                    this.hadgehog.backgroundImage = "url('./images/hadgehogMoveRight.png";
                     this.hadgehog.movingRight();
                     
                     //console.log(this.hadgehog.backgroundImage);
@@ -214,14 +228,14 @@ class Game {
                         this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
             }
-            if (event.key === "ArrowDown") {
-                this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogDown1.png";
+            if (event.key === "ArrowDown" && gameoverpicture.style.visibility === 'hidden' && winpicture.style.visibility === 'hidden') {
+                this.hadgehog.backgroundImage = "url('./images/hadgehogDown1.png";
                 this.hadgehog.movingDown();
                 if (pickedUp !== undefined) {
                     this.hadgehog.pickUp(this.applesDropped[pickedUp], this.hadgehog);
                 }
-            } else if (event.key === "ArrowUp"){
-                this.hadgehog.backgroundImage = "url('/project1-hedgehog/images/hadgehogUp1.png";
+            } else if (event.key === "ArrowUp" && gameoverpicture.style.visibility === 'hidden' && winpicture.style.visibility === 'hidden'){
+                this.hadgehog.backgroundImage = "url('./images/hadgehogUp1.png";
                 if (this.hadgehog.positionY < 27) {
                     this.hadgehog.movingUp();
                     if (pickedUp !== undefined) {
@@ -230,6 +244,7 @@ class Game {
                 }
             }
         });
+        
     }
     detectCollisionTree(playerInstance, target) {
         let tree = document.getElementById(target); 
@@ -382,6 +397,7 @@ document.addEventListener("click", (event) => {
                 game.start();
                 gameStarted = true;
             }
+/* ---------------------------------- It's START GAME -------------------------------- */
             const gamepicture = document.getElementById("gamepicture");
             const winpicture = document.getElementById("winpicture");
             const gameoverpicture = document.getElementById("gameoverpicture");
