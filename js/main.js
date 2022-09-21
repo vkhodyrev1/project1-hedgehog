@@ -26,25 +26,24 @@ class Game {
         const yourlevel = document.getElementById("yourlevel");
         switch (this.level) {
             case 0:
-                startlevel.style.visibility = 'hidden';
                 yourlevel.style.width = "auto";
                 yourlevel.style.left = "15vw";
                 yourlevelspan.innerText = "00 Please RESTART GAME AND CHOOSE LEVEL! Or use this level for training!";
             break;
             case 5:
-                startlevel.style.visibility = 'hidden';
+                
                 yourlevelspan.innerText = "01";
             break;
             case 10:
-                startlevel.style.visibility = 'hidden';
+                
                 yourlevelspan.innerText = "02";
             break;
             case 15:
-                startlevel.style.visibility = 'hidden';
+                
                 yourlevelspan.innerText = "03";
             break;
             case 20:
-                startlevel.style.visibility = 'hidden';
+                
                 yourlevelspan.innerText = "04";
             break;
         }
@@ -160,7 +159,7 @@ class Game {
                     
                     if (this.detectCollisionTree(this.hadgehog, "corner") && !corner && pickedUp !== undefined) {
                         //console.log("I'm in the corner ...");
-/* ---------------------------------- styling фзздуі -------------------------------- */                        
+/* ---------------------------------- styling apples -------------------------------- */                        
                         if (pickedUp < 10) {
                             this.applesDropped[pickedUp].positionX = 0;
                             this.applesDropped[pickedUp].positionY = pickedUp*this.applesDropped[pickedUp].height;
@@ -360,13 +359,14 @@ class Apple extends MovingParts {
     
 }
 
+/* ---------------------------------- start play gameover win quit -------------------------------- */
 let game;
+let gameagain = false;
 let level = 0;
 let gameStarted = false;
 
 document.addEventListener("click", (event) => {
     const startlevel = document.getElementById("startlevel");
-    //const yourlevel = document.querySelector("#yourlevel h3 span");
     const gamepicture = document.getElementById("gamepicture");
     const winpicture = document.getElementById("winpicture");
     const gameoverpicture = document.getElementById("gameoverpicture");
@@ -375,59 +375,50 @@ document.addEventListener("click", (event) => {
     const btnstart = document.getElementById("btnstart");
     const redapple = document.getElementById("redapple");
     const yourlevelup = document.getElementById("yourlevel");
+    
     switch (event.target.innerText) {
         
         case "Play again":
             location.href = 'index.html';
-            
-            //this.remove(game);
-            //game = new Game(level);
-            //game.start();
-            //gameStarted = true;
-            //
-            //gamepicture.style.visibility = 'visible';
-            //winpicture.style.visibility = 'hidden';
-            //gameoverpicture.style.visibility = 'hidden';
-            //startpicture.style.visibility = 'hidden';
-            //redapple.style.visibility = 'visible';
-            //btnstart.style.visibility = 'hidden';
-            //yourlevelup.style.visibility = 'visible';
-            //quit.style.visibility = 'visible';
+            gameagain = true;
         break;
         case "QUIT":
             location.href = 'index.html';
+            level = 0;
+            localStorage.setItem("level", level)
         break;
         case "LEVEL 1":
             level = 5;
-            startlevel.style.visibility = 'hidden';
+            localStorage.setItem("level", level)
+            startlevel.style.display = 'none';
         break;
         case "LEVEL 2":
             level = 10;
-            startlevel.style.visibility = 'hidden';
+            localStorage.setItem("level", level)
+            startlevel.style.display = 'none';
         break;
         case "LEVEL 3":
             level = 15;
-            startlevel.style.visibility = 'hidden';
+            localStorage.setItem("level", level)
+            startlevel.style.display = 'none';
         break;
         case "LEVEL 4":
             level = 20;
-            startlevel.style.visibility = 'hidden';
+            localStorage.setItem("level", level)
+            startlevel.style.display = 'none';
         break;
         case "START GAME":
+            if (gameagain = true) {
+                level = Number(localStorage.getItem("level"));
+            }
             if (gameStarted === false) {   
                 game = new Game(level);
                 game.start();
                 gameStarted = true;
             }
+            gameagain = false;
+            level = 0;
 /* ---------------------------------- It's START GAME -------------------------------- */
-            //const gamepicture = document.getElementById("gamepicture");
-            //const winpicture = document.getElementById("winpicture");
-            //const gameoverpicture = document.getElementById("gameoverpicture");
-            //const startpicture = document.getElementById("startpicture");
-            //const quit = document.getElementById("quit");
-            //const btnstart = document.getElementById("btnstart");
-            //const redapple = document.getElementById("redapple");
-            //const yourlevel = document.getElementById("yourlevel");
             gamepicture.style.visibility = 'visible';
             winpicture.style.visibility = 'hidden';
             gameoverpicture.style.visibility = 'hidden';
@@ -436,9 +427,11 @@ document.addEventListener("click", (event) => {
             btnstart.style.visibility = 'hidden';
             yourlevelup.style.visibility = 'visible';
             quit.style.visibility = 'visible';
-            
+            startlevel.style.display = 'none';
         break;
     }
-    console.log(gameStarted);
-    console.log(level);
+    //console.log(gameStarted);
+    //console.log(level);
 });
+
+
