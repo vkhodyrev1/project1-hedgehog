@@ -19,7 +19,7 @@ Let's get started!
 ## Rules
 
 - Before start game choose game level you wish.
-- If you did nont choose, the game starts as level 0 onli with one apple on the tree, so you can train to come through the obstacles.
-- Tree can be shaked only in one plase at left or right side, fond out it. 
+- If you did nont choose, the game starts as level 0 only with one apple on the tree, so you can train to come through the obstacles.
+- Tree can be shaked only in one plase at left or right side, found out it. 
 - The hedgehog has to bring apples only to his house door.
 - Help your cute animal to get lunch.
