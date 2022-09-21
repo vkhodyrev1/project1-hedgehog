@@ -1,11 +1,10 @@
 class Game {
     constructor (level){
-        this.hadgehog = null; //will store an instance of the class Player
-        this.apples = []; //will store instances of the class Obstacle
+        this.hadgehog = null; //will store an instance of the class Hadgehog
+        this.apples = []; //will store instances of the class Apple
         this.applesDropped = [];
         this.obstacles = [];
         this.level = level;
-        //this.gameover = false;
     }
     start() {
         let sizes = [
@@ -44,23 +43,25 @@ class Game {
                 startlevel.style.visibility = 'hidden';
                 yourlevelspan.innerText = "03";
             break;
-            
+            case 20:
+                startlevel.style.visibility = 'hidden';
+                yourlevelspan.innerText = "04";
+            break;
         }
+/* ------------------- sizes recalculating -------------------------- */
         if (window.innerWidth >= window.innerHeight) {
             sizes.forEach((widthItem) => {
                 widthItem.width = widthItem.width*window.innerHeight/window.innerWidth;
-                //console.log(widthItem.width);
-                //console.log(sizes);
             })
         } else {
             sizes.forEach((heightItem) => {
                 heightItem.heigth = heightItem.heigth*window.innerWidth/window.innerHeight;
             })
         }
-        //console.log(sizes);
+/* ------------------- create player instance -------------------------- */       
         this.hadgehog = new Hadgehog (sizes[0].heigth, sizes[0].width, sizes[0].width, 0, "hadgehog", "board", "url('./images/hadgehogHome.png");
         this.attachEventListeners();
-        
+/* ------------------- creating and moving apples instances -------------------------- */         
         if (this.applesDropped.length === 0) {
             //console.log(this.applesDropped);
             const applesAppear = setInterval(() => {
@@ -76,7 +77,7 @@ class Game {
             }, 10);
         }
 
-        
+/* ------------------- creating and appearing obstacles instances -------------------------- */         
         const obstaclesAppear = setInterval(() => {
             let randomObstacleX = Math.floor(Math.random()*40 + 10);
             const obstacleInstance = new MovingParts(sizes[2].heigth, sizes[2].width, randomObstacleX, 100, "obstacle", "board", "url('./images/owl.png')");
@@ -85,28 +86,18 @@ class Game {
             }
         }, 2000)
     
-        
+/* ------------------- creating and moving obstacles instances -------------------------- */  
         const obstaclesDrop = setInterval(() => {
             this.obstacles.forEach((obstacle) => {
-                //console.log(obstacle);
-                
                 obstacle.movingDown();
                 const winpicture = document.getElementById("winpicture");
                 if (this.detectCollisionApple(obstacle) || winpicture.style.visibility === 'visible') {
 /* -------------- It's GAME OVER -------------------------------- */  
-                    //this.gameover = true;
-                    //document.removeEventListener("keydown", document.event);
-                    //clearInterval(obstaclesDrop);
-                    
-
                     clearInterval(obstaclesAppear);
-                    
-                    //removeEventListener("keydown", document.addEventListener)
                     const gamepicture = document.getElementById("gamepicture");
                     const gameoverpicture = document.getElementById("gameoverpicture");
                     const play = document.getElementById("play");
                     const redapple = document.getElementById("redapple");
-
                     gamepicture.style.visibility = 'hidden';
                     gameoverpicture.style.visibility = 'visible';
                     play.style.visibility = 'visible';
@@ -119,7 +110,7 @@ class Game {
             })
         }, 60);
     }
-    
+/* ------------------- shaking tree method -------------------------- */     
     shakeTree () {
         const applesDrop = setInterval(() => {
             this.apples.forEach((apple, index) => {
@@ -143,7 +134,7 @@ class Game {
         let score = 0;
         let corner = false;
         let leftSideTree = false;
-        
+/* ------------------- keyboard listening conditions -------------------------- */        
         document.addEventListener("keydown", (event) => {
             const gameoverpicture = document.getElementById("gameoverpicture");
             const winpicture = document.getElementById("winpicture");
@@ -159,7 +150,6 @@ class Game {
                     this.shakeTree();
                     shaked = true;
                 } else  if (pickedUp === undefined && this.hadgehog.positionX > this.hadgehog.width*3) {
-                    //console.log(this.applesDropped);
                     this.applesDropped.forEach((droppedApple, index)  => {
                         if (this.detectCollisionApple(droppedApple)) {
                             //console.log(droppedApple);
@@ -168,16 +158,21 @@ class Game {
                     })    
                 } else {
                     
-                    if (this.detectCollisionTree(this.hadgehog, "corner") && !corner) {
+                    if (this.detectCollisionTree(this.hadgehog, "corner") && !corner && pickedUp !== undefined) {
                         //console.log("I'm in the corner ...");
-                        this.applesDropped[pickedUp].positionX = 0;
-                        this.applesDropped[pickedUp].positionY = pickedUp*this.applesDropped[pickedUp].height;
+/* ---------------------------------- styling фзздуі -------------------------------- */                        
+                        if (pickedUp < 10) {
+                            this.applesDropped[pickedUp].positionX = 0;
+                            this.applesDropped[pickedUp].positionY = pickedUp*this.applesDropped[pickedUp].height;
+                        } else {
+                            this.applesDropped[pickedUp].positionX = this.applesDropped[pickedUp].width;
+                            this.applesDropped[pickedUp].positionY = (pickedUp - 10)*this.applesDropped[pickedUp].height;
+                        } 
                         this.applesDropped[pickedUp].domElement.style.left = this.applesDropped[pickedUp].positionX + "vw";
                         this.applesDropped[pickedUp].domElement.style.bottom = this.applesDropped[pickedUp].positionY + "vh";
                         corner = true;
                         pickedUp = undefined;
                         score += 5;
-                        console.log("I'm in the corner ...");
                         document.querySelector("#corner h3 span").innerText = score + " points";
                         if (score === this.applesDropped.length*5) {
 /* ---------------------------------- It's WIN -------------------------------- */
@@ -246,13 +241,11 @@ class Game {
         });
         
     }
+
     detectCollisionTree(playerInstance, target) {
         let tree = document.getElementById(target); 
         let treeMiddle = ((tree.getBoundingClientRect().right - tree.getBoundingClientRect().left)/2 + 
         tree.getBoundingClientRect().left)*100/window.innerWidth;
-        //console.log(tree.getBoundingClientRect().right);
-        //console.log(tree.getBoundingClientRect().left);
-        //console.log(treeMiddle);
 
         if (playerInstance.positionX < treeMiddle && 
             playerInstance.positionX + playerInstance.width*1.2 > treeMiddle && playerInstance.positionY > 1 && playerInstance.positionY < 10) {
@@ -273,9 +266,8 @@ class Game {
             return false;
         }
     }
-
 }
-
+/* ---------------------------------- parent class for moving parts -------------------------------- */
 class MovingParts {
     constructor (height, width, positionX, positionY, idByClass, idParentContainer, backgroundImage){
         this.height = height;
@@ -374,8 +366,34 @@ let gameStarted = false;
 
 document.addEventListener("click", (event) => {
     const startlevel = document.getElementById("startlevel");
-    const yourlevel = document.querySelector("#yourlevel h3 span");
+    //const yourlevel = document.querySelector("#yourlevel h3 span");
+    const gamepicture = document.getElementById("gamepicture");
+    const winpicture = document.getElementById("winpicture");
+    const gameoverpicture = document.getElementById("gameoverpicture");
+    const startpicture = document.getElementById("startpicture");
+    const quit = document.getElementById("quit");
+    const btnstart = document.getElementById("btnstart");
+    const redapple = document.getElementById("redapple");
+    const yourlevelup = document.getElementById("yourlevel");
     switch (event.target.innerText) {
+        
+        case "Play again":
+            location.href = 'index.html';
+            
+            //this.remove(game);
+            //game = new Game(level);
+            //game.start();
+            //gameStarted = true;
+            //
+            //gamepicture.style.visibility = 'visible';
+            //winpicture.style.visibility = 'hidden';
+            //gameoverpicture.style.visibility = 'hidden';
+            //startpicture.style.visibility = 'hidden';
+            //redapple.style.visibility = 'visible';
+            //btnstart.style.visibility = 'hidden';
+            //yourlevelup.style.visibility = 'visible';
+            //quit.style.visibility = 'visible';
+        break;
         case "QUIT":
             location.href = 'index.html';
         break;
@@ -391,6 +409,10 @@ document.addEventListener("click", (event) => {
             level = 15;
             startlevel.style.visibility = 'hidden';
         break;
+        case "LEVEL 4":
+            level = 20;
+            startlevel.style.visibility = 'hidden';
+        break;
         case "START GAME":
             if (gameStarted === false) {   
                 game = new Game(level);
@@ -398,23 +420,25 @@ document.addEventListener("click", (event) => {
                 gameStarted = true;
             }
 /* ---------------------------------- It's START GAME -------------------------------- */
-            const gamepicture = document.getElementById("gamepicture");
-            const winpicture = document.getElementById("winpicture");
-            const gameoverpicture = document.getElementById("gameoverpicture");
-            const startpicture = document.getElementById("startpicture");
-            const quit = document.getElementById("quit");
-            const btnstart = document.getElementById("btnstart");
-            const redapple = document.getElementById("redapple");
-            const yourlevel = document.getElementById("yourlevel");
+            //const gamepicture = document.getElementById("gamepicture");
+            //const winpicture = document.getElementById("winpicture");
+            //const gameoverpicture = document.getElementById("gameoverpicture");
+            //const startpicture = document.getElementById("startpicture");
+            //const quit = document.getElementById("quit");
+            //const btnstart = document.getElementById("btnstart");
+            //const redapple = document.getElementById("redapple");
+            //const yourlevel = document.getElementById("yourlevel");
             gamepicture.style.visibility = 'visible';
             winpicture.style.visibility = 'hidden';
             gameoverpicture.style.visibility = 'hidden';
             startpicture.style.visibility = 'hidden';
             redapple.style.visibility = 'visible';
             btnstart.style.visibility = 'hidden';
-            yourlevel.style.visibility = 'visible';
+            yourlevelup.style.visibility = 'visible';
             quit.style.visibility = 'visible';
             
         break;
     }
+    console.log(gameStarted);
+    console.log(level);
 });

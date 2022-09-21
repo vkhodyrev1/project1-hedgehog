@@ -49,11 +49,6 @@ body {
     visibility: hidden;
     position: absolute;
 }
-#redapple img {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-}
 #corner {
     width: 15vw;
     height: 100%;
@@ -71,32 +66,37 @@ h3 {
     position: absolute;
     left: 42.5vw;
 }
+.btn {
+    position: absolute;
+    background-color: rgba(241, 238, 45, 0.269);
+    text-decoration: none;
+    border: 2px solid rgb(111, 10, 59);
+    border-radius: 50%;
+    color: rgb(252, 6, 6);
+    font-size: 3vw;
+    padding: 3vh 5vw;
+}
+.btn:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+  }
 #quit {
     visibility: hidden;
     right: 2vw;
     bottom: 2vh;
     font-size: 1.5vw;
-    padding: 3.5vh 1vw;
-    position: absolute;
-    background-color: rgba(241, 238, 45, 0.269);
-    text-decoration: none;
-    border: 2px solid rgb(111, 10, 59);
-    border-radius: 50%;
-    color: rgb(252, 6, 6);
+    padding: 3.5vh 1vw;  
 }
 
 #btnstart {
     visibility: visible;
-    position: absolute;
-    font-size: 3vw;
     margin: 27vh 0;
-    padding: 3vh 5vw;
-    background-color: rgba(241, 238, 45, 0.269);
-    text-decoration: none;
-    border: 2px solid rgb(111, 10, 59);
-    border-radius: 50%;
-    color: rgb(252, 6, 6);
     bottom: 0;
+    left: 35vw;
+}
+#play {
+    visibility: hidden;
+    bottom: 30vh;
     left: 35vw;
 }
 #startlevel {
@@ -118,17 +118,5 @@ h3 {
     color: white;
   }
 
-#play {
-    visibility: hidden;
-    position: absolute;
-    background-color: rgba(241, 238, 45, 0.269);
-    text-decoration: none;
-    border: 2px solid rgb(111, 10, 59);
-    border-radius: 50%;
-    color: rgb(252, 6, 6);
-    bottom: 30vh;
-    font-size: 3vw;
-    padding: 3vh 5vw;
-    left: 35vw;
-}
+
 
