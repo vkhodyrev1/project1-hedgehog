@@ -94,6 +94,11 @@ class Game {
                     const gameoverpicture = document.getElementById("gameoverpicture");
                     const play = document.getElementById("play");
                     const redapple = document.getElementById("redapple");
+                    const applesToHide = document.querySelectorAll(".apple");
+                    //console.log(applesToHide);
+                    applesToHide.forEach((appleToHide) => {
+                        appleToHide.style.visibility = 'hidden';
+                    });
                     gamepicture.style.visibility = 'hidden';
                     gameoverpicture.style.visibility = 'visible';
                     play.style.visibility = 'visible';
