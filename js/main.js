@@ -21,7 +21,7 @@ class Game {
                 heigth: 10
             }
         ]
-        const startlevel = document.getElementById("startlevel");
+        //const startlevel = document.getElementById("startlevel");
         const yourlevelspan = document.querySelector("#yourlevel h3 span");
         const yourlevel = document.getElementById("yourlevel");
         switch (this.level) {
@@ -175,8 +175,7 @@ class Game {
                         document.querySelector("#corner h3 span").innerText = score + " points";
                         if (score === this.applesDropped.length*5) {
 /* ---------------------------------- It's WIN -------------------------------- */
-                            //clearInterval(obstaclesDrop);
-                            //clearInterval(obstaclesAppear);
+                            
                             const gamepicture = document.getElementById("gamepicture");
                             
                             const play = document.getElementById("play");
@@ -307,11 +306,11 @@ class MovingParts {
     }
 
     movingRight() {
-        if (this.positionX < 100 - this.width) {
+        if (this.positionX < 99 - this.width) {
             this.positionX++;
             this.domElement.style.left = this.positionX + "vw";
         } else {
-            this.positionX = 100- this.width;
+            this.positionX = 99 - this.width;
         }
         this.domElement.style.backgroundImage = this.backgroundImage;
     }
