@@ -40,7 +40,7 @@ class Game {
             case 15:
                 yourlevelspan.innerText = "03";
             break;
-            case 20:
+            case 19:
                 yourlevelspan.innerText = "04";
             break;
         }
@@ -135,6 +135,7 @@ class Game {
         let score = 0;
         let corner = false;
         let leftSideTree = false;
+        var shake = new Audio('./audio/shake.wav');
 /* ------------------- keyboard listening conditions -------------------------- */        
         document.addEventListener("keydown", (event) => {
             const gameoverpicture = document.getElementById("gameoverpicture");
@@ -149,6 +150,8 @@ class Game {
                 if (this.detectCollisionTree(this.hadgehog, "redapple") && !shaked) {
                     corner = true;
                     this.shakeTree();
+                    
+                    shake.play();
                     shaked = true;
                 } else  if (pickedUp === undefined && this.hadgehog.positionX > this.hadgehog.width*3) {
                     this.applesDropped.forEach((droppedApple, index)  => {
@@ -180,7 +183,6 @@ class Game {
                         document.querySelector("#corner h3 span").innerText = score + " points";
                         if (score === this.applesDropped.length*5) {
 /* ---------------------------------- It's WIN -------------------------------- */
-                            
                             const gamepicture = document.getElementById("gamepicture");
                             
                             const play = document.getElementById("play");
@@ -212,6 +214,8 @@ class Game {
                     
                     leftSideTree = true;
                     this.shakeTree();
+                    
+                    shake.play();
                     shaked = true;
                 } else  if (pickedUp === undefined && this.hadgehog.positionX > this.hadgehog.width*3) {
                     //console.log(this.applesDropped);
@@ -347,6 +351,7 @@ class Hadgehog extends MovingParts {
       
     }
     pickUp (pickedUpApple, hadgehogDriver) {
+        
         pickedUpApple.positionX = hadgehogDriver.positionX + (hadgehogDriver.width - pickedUpApple.width)/2;
         pickedUpApple.positionY = hadgehogDriver.positionY + hadgehogDriver.height/2;
         pickedUpApple.domElement.style.left = pickedUpApple.positionX + "vw";
@@ -367,7 +372,6 @@ class Apple extends MovingParts {
 let gameagain = false;
 let level = 0;
 let gameStarted = false;
-
 document.addEventListener("click", (event) => {
     const startlevel = document.getElementById("startlevel");
     const gamepicture = document.getElementById("gamepicture");
