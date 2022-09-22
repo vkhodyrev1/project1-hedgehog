@@ -161,19 +161,22 @@ class Game {
                     
                     if (this.detectCollisionTree(this.hadgehog, "corner") && !corner && pickedUp !== undefined) {
                         //console.log("I'm in the corner ...");
-/* ---------------------------------- styling apples -------------------------------- */                        
-                        if (pickedUp < 10) {
+/* ---------------------------------- styling apples -------------------------------- */ 
+                        let scoreSaved = Number(localStorage.getItem("score"))/5;
+                        console.log(scoreSaved);
+                        if (scoreSaved < 10) {
                             this.applesDropped[pickedUp].positionX = 0;
-                            this.applesDropped[pickedUp].positionY = pickedUp*this.applesDropped[pickedUp].height;
+                            this.applesDropped[pickedUp].positionY = scoreSaved*this.applesDropped[pickedUp].height;
                         } else {
                             this.applesDropped[pickedUp].positionX = this.applesDropped[pickedUp].width;
-                            this.applesDropped[pickedUp].positionY = (pickedUp - 10)*this.applesDropped[pickedUp].height;
+                            this.applesDropped[pickedUp].positionY = (scoreSaved - 10)*this.applesDropped[pickedUp].height;
                         } 
                         this.applesDropped[pickedUp].domElement.style.left = this.applesDropped[pickedUp].positionX + "vw";
                         this.applesDropped[pickedUp].domElement.style.bottom = this.applesDropped[pickedUp].positionY + "vh";
                         corner = true;
                         pickedUp = undefined;
                         score += 5;
+                        localStorage.setItem("score", score)
                         document.querySelector("#corner h3 span").innerText = score + " points";
                         if (score === this.applesDropped.length*5) {
 /* ---------------------------------- It's WIN -------------------------------- */
@@ -248,7 +251,7 @@ class Game {
         tree.getBoundingClientRect().left)*100/window.innerWidth;
 
         if (playerInstance.positionX < treeMiddle && 
-            playerInstance.positionX + playerInstance.width*1.2 > treeMiddle && playerInstance.positionY > 1 && playerInstance.positionY < 10) {
+            playerInstance.positionX + playerInstance.width*1.2 > treeMiddle && playerInstance.positionY > 1 && playerInstance.positionY < 12) {
                 
                 return true;
             } else {
@@ -381,11 +384,13 @@ document.addEventListener("click", (event) => {
         case "Play again":
             location.href = 'index.html';
             gameagain = true;
+            localStorage.setItem("score", '0')
         break;
         case "QUIT":
             location.href = 'index.html';
             level = 0;
             localStorage.setItem("level", level)
+            localStorage.setItem("score", '0')
         break;
         case "LEVEL 1":
             level = 5;
@@ -403,7 +408,7 @@ document.addEventListener("click", (event) => {
             startlevel.style.display = 'none';
         break;
         case "LEVEL 4":
-            level = 20;
+            level = 19;
             localStorage.setItem("level", level)
             startlevel.style.display = 'none';
         break;
@@ -418,6 +423,7 @@ document.addEventListener("click", (event) => {
             }
             gameagain = false;
             level = 0;
+            localStorage.setItem("score", '0')
 /* ---------------------------------- It's START GAME -------------------------------- */
             gamepicture.style.visibility = 'visible';
             winpicture.style.visibility = 'hidden';
