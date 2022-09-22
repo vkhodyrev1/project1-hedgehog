@@ -88,10 +88,18 @@ h3 {
     padding: 3.5vh 1vw;  
 }
 #btnstart {
+    display: flex;
+    flex-direction: column;
     visibility: visible;
     margin: 27vh 0;
     bottom: 0;
     left: 35vw;
+    align-items: center;
+}
+#btnstart a {
+    font-size: 1.5vw;
+    text-decoration: none;
+    color:rgb(13, 102, 111)
 }
 #play {
     visibility: hidden;
@@ -116,6 +124,36 @@ h3 {
     background-color: #4CAF50; /* Green */
     color: white;
   }
-
-
-
+/*--------- rules style -------------*/
+#rules {
+    height: 100vh;
+    position: relative;
+    color: rgb(111, 10, 59);
+    font-size: large;
+    font-weight: bold;
+    align-items: center;
+}
+#rules img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+#rules a {
+    left: 41vw;
+    bottom: 3vw;
+}
+#rules div {
+    position: relative;
+    
+    margin: 0 10vw;
+    top: 12vh;
+    background-color: rgba(222, 184, 135, 0.38);
+    padding: 3vh 5vw;
+    border-radius: 50px;
+}
+#rules h2 {
+    text-align: center;
+}
+#rules p {
+    text-align: center;
+}
