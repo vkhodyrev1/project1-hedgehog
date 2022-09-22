@@ -3,9 +3,10 @@ class Game {
         this.hadgehog = null; //will store an instance of the class Hadgehog
         this.apples = []; //will store instances of the class Apple
         this.applesDropped = [];
-        this.obstacles = [];
+        this.obstacles = []; //will store instances of the class MovingParts
         this.level = level;
     }
+/* ------------------- sizes moving parts -------------------------- */
     start() {
         let sizes = [
             {
@@ -21,7 +22,7 @@ class Game {
                 heigth: 10
             }
         ]
-        //const startlevel = document.getElementById("startlevel");
+/* ------------------- level displaying -------------------------- */
         const yourlevelspan = document.querySelector("#yourlevel h3 span");
         const yourlevel = document.getElementById("yourlevel");
         switch (this.level) {
@@ -31,19 +32,15 @@ class Game {
                 yourlevelspan.innerText = "00 Please RESTART GAME AND CHOOSE LEVEL! Or use this level for training!";
             break;
             case 5:
-                
                 yourlevelspan.innerText = "01";
             break;
             case 10:
-                
                 yourlevelspan.innerText = "02";
             break;
             case 15:
-                
                 yourlevelspan.innerText = "03";
             break;
             case 20:
-                
                 yourlevelspan.innerText = "04";
             break;
         }
@@ -359,7 +356,6 @@ class Apple extends MovingParts {
 }
 
 /* ---------------------------------- start play gameover win quit -------------------------------- */
-let game;
 let gameagain = false;
 let level = 0;
 let gameStarted = false;
@@ -411,7 +407,7 @@ document.addEventListener("click", (event) => {
                 level = Number(localStorage.getItem("level"));
             }
             if (gameStarted === false) {   
-                game = new Game(level);
+                const game = new Game(level);
                 game.start();
                 gameStarted = true;
             }
